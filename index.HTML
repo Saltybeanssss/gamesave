@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>확률 무기 강화 게임</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url(ing.jpg);
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .game-area {
+      text-align: center;
+    }
+
+    #weapon {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    #result {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .inventory {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .inventory-item {
+      display: inline-block;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>확률 무기 강화 게임</h1>
+
+    <div class="game-area">
+      <p id="weapon">무기: start!</p>
+      <button onclick="enhanceWeapon()">무기 강화</button>
+      <p id="result"></p>
+    </div>
+
+    <div class="inventory">
+      <h2>보유한 무기</h2>
+      <div id="inventoryItems"></div>
+    </div>
+  </div>
+
+  <script>
+    let weaponLevel = 1;
+    const maxWeaponLevel = 120; // 최대 무기 레벨
+    const weaponNames = Array.from({ length: maxWeaponLevel }, (_, i) => '무기 레벨 ' + (i + 1));
+    let failureProbability = 0.5; // 실패 확률 초기값
+
+    function enhanceWeapon() {
+      const success = Math.random() >= failureProbability; // 실패 확률을 늘림
+
+      if (success) {
+        weaponLevel = Math.min(weaponLevel + 1, maxWeaponLevel);
+        document.getElementById('result').innerText = '무기 강화 성공! 현재 레벨: ' + weaponLevel;
+        failureProbability = 0.5; // 성공 시 실패 확률 초기화
+      } else {
+        weaponLevel = Math.max(weaponLevel - 1, 1); // 실패 시 이전 단계로 감소
+        document.getElementById('result').innerText = '무기 강화 실패! 현재 레벨: ' + weaponLevel;
+        failureProbability += 0.01; // 실패 확률 증가
+      }
+
+      document.getElementById('weapon').innerText = '무기: ' + weaponNames[weaponLevel - 1];
+
+      updateInventory();
+    }
+
+    function updateInventory() {
+      const inventoryItems = document.getElementById('inventoryItems');
+      inventoryItems.innerHTML = '';
+
+      for (let i = 0; i < weaponLevel; i++) {
+        const inventoryItem = document.createElement('div');
+        inventoryItem.classList.add('inventory-item');
+        inventoryItem.innerText = weaponNames[i];
+        inventoryItems.appendChild(inventoryItem);
+      }
+    }
+  </script>
+</body>
+</html>
